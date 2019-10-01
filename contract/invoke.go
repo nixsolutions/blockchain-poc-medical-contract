@@ -3,6 +3,7 @@ package contract
 import (
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-protos-go/peer"
+	"poc/contract/action/access"
 	"poc/contract/action/agreement"
 	"poc/contract/action/card"
 	"poc/contract/action/vaccination"
@@ -23,14 +24,26 @@ func (t *MedicalContract) Invoke(stub shim.ChaincodeStubInterface) peer.Response
 		result, err = card.SetCard(stub, args)
 	case "getCard":
 		result, err = card.GetCard(stub, args)
+
+	case "createAccess":
+		result, err = access.CreateAccess(stub, args)
+	case "getAccess":
+		result, err = access.GetAccess(stub, args)
+
 	case "getAgreement":
 		result, err = agreement.GetAgreement(stub, args)
+	case "createAgreement":
+		result, err = agreement.CreateAgreement(stub, args)
+	case "signAgreement":
+		result, err = agreement.SignAgreement(stub, args)
+
 	case "addVaccination":
 		result, err = vaccination.AddVaccination(stub, args)
 	case "updateVaccinationTimestamp":
 		result, err = vaccination.UpdateVaccinationTimestamp(stub, args)
 	case "deleteVaccination":
 		result, err = vaccination.DeleteVaccination(stub, args)
+
 	default:
 		result, err = card.GetCard(stub, args)
 	}

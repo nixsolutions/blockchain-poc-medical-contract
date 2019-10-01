@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
-	"poc/contract/repository"
+	"poc/contract/service"
 )
 
 // Get returns the value of the specified asset key
@@ -15,8 +15,8 @@ func GetAgreement(stub shim.ChaincodeStubInterface, args []string) (string, erro
 	}
 
 	var agreement model.Agreement
-	agreementRepository := &repository.AgreementRepository{Stub: stub}
-	err := agreementRepository.Find("AGR" + args[0], &agreement)
+	agreementService := service.NewAgreementService(stub)
+	err := agreementService.FindAndUnmarshal(args[0], &agreement)
 	if err != nil {
 		return "", err
 	}

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
-	"poc/contract/repository"
+	"poc/contract/service"
 )
 
 func AddVaccination(stub shim.ChaincodeStubInterface, args []string) (string, error) {
@@ -13,10 +13,9 @@ func AddVaccination(stub shim.ChaincodeStubInterface, args []string) (string, er
 		return "", fmt.Errorf("Incorrect arguments. Expecting a value")
 	}
 
-
 	var card model.Card
-	cardRepository := &repository.CardRepository{ Stub: stub}
-	err := cardRepository.Find(args[0], &card)
+	cardService := service.NewCardService(stub)
+	err := cardService.FindAndUnmarshal(args[0], &card)
 	if err != nil {
 		return "", err
 	}
