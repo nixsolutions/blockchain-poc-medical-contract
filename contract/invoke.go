@@ -24,6 +24,8 @@ func (t *MedicalContract) Invoke(stub shim.ChaincodeStubInterface) peer.Response
 		result, err = card.SetCard(stub, args)
 	case "getCard":
 		result, err = card.GetCard(stub, args)
+	case "getCards":
+		result, err = card.GetCards(stub, args)
 
 	case "createAccess":
 		result, err = access.CreateAccess(stub, args)

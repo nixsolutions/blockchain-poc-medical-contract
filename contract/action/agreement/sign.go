@@ -2,6 +2,7 @@ package agreement
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
@@ -14,7 +15,11 @@ func SignAgreement(stub shim.ChaincodeStubInterface, args []string) (string, err
 	}
 	key := args[0]
 
-	//TODO: add doctor cid check
+	user := service.NewAuthService(stub).GetUser()
+	if !user.IsPediatrician() {
+		return "", errors.New("user is not a Pediatrician")
+	}
+
 	var agreement model.Agreement
 	agreementService := service.NewAgreementService(stub)
     err := agreementService.FindAndUnmarshal(key, &agreement)

@@ -2,9 +2,11 @@ package card
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
+	"poc/contract/service"
 )
 
 // Set stores the asset (both key and value) on the ledger. If the key exists,
@@ -12,6 +14,11 @@ import (
 func SetCard(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a value")
+	}
+	user := service.NewAuthService(stub).GetUser()
+
+	if !user.IsParent() {
+		return "", errors.New("user is not a parent")
 	}
 
 	var card model.Card

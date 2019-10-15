@@ -2,6 +2,7 @@ package agreement
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
@@ -15,7 +16,10 @@ func CreateAgreement(stub shim.ChaincodeStubInterface, args []string) (string, e
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
 	}
 
-	//TODO: add org check
+	user := service.NewAuthService(stub).GetUser()
+	if !user.IsParent() {
+		return "", errors.New("only parents can create agreements")
+	}
 	key, doctor, parentsString := args[0], args[1], args[2]
 	parents := strings.Split(parentsString, ",")
 

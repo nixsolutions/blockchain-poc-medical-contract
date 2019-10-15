@@ -2,6 +2,7 @@ package vaccination
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
@@ -20,6 +21,20 @@ func UpdateVaccinationTimestamp(stub shim.ChaincodeStubInterface, args []string)
 	err := cardService.FindAndUnmarshal(cardId, &card)
 	if err != nil {
 		return "", err
+	}
+	accessService := service.NewAccessService(stub)
+	user := service.NewAuthService(stub).GetUser()
+	if user.IsNeuropathologist() {
+		return "", errors.New("only Neuropathologist can do vaccination")
+	}
+
+	access, err := accessService.FindAccessByDoctor(user.Id, args[0])
+	if access == nil {
+		return  "", errors.New("access was not found")
+	}
+
+	if access.Invalid() {
+		return  "", errors.New("access is invalid")
 	}
 
 	for key, item := range card.Vaccination {
