@@ -21,7 +21,10 @@ func DeleteVaccination(stub shim.ChaincodeStubInterface, args []string) (string,
 		return "", err
 	}
 	accessService := service.NewAccessService(stub)
-	user := service.NewAuthService(stub).GetUser()
+	user, err := service.NewAuthService(stub).GetUser()
+	if err != nil {
+		return "", err
+	}
 	if user.IsNeuropathologist() {
 		return "", errors.New("only Neuropathologist can do vaccination")
 	}

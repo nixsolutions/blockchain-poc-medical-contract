@@ -16,7 +16,10 @@ func CreateAgreement(stub shim.ChaincodeStubInterface, args []string) (string, e
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
 	}
 
-	user := service.NewAuthService(stub).GetUser()
+	user, err := service.NewAuthService(stub).GetUser()
+	if err != nil {
+		return "", err
+	}
 	if !user.IsParent() {
 		return "", errors.New("only parents can create agreements")
 	}

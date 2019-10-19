@@ -27,8 +27,10 @@ func GetCard(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	user := service.NewAuthService(stub).GetUser()
-
+	user, err := service.NewAuthService(stub).GetUser()
+	if err != nil {
+		return "", err
+	}
 	if user.IsParent() || user.IsPediatrician() {
 		bytes, err := json.Marshal(card)
 		if err != nil {

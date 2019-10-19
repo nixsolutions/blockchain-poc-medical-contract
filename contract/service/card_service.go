@@ -57,7 +57,10 @@ func (service *CardService) HasAccessToCard(cardKey string) (bool, error) {
 		return false, err
 	}
 
-	user := NewAuthService(service.basicRepo.Stub).GetUser()
+	user, err := NewAuthService(service.basicRepo.Stub).GetUser()
+	if err != nil {
+		return false, err
+	}
 
 	if user.IsParent() {
 		for _, parent := range card.Parents {

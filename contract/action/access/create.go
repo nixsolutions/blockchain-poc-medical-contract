@@ -35,7 +35,10 @@ func CreateAccess(stub shim.ChaincodeStubInterface, args []string) (string, erro
 	}
 	//TODO: add agreement check
 
-	user := service.NewAuthService(stub).GetUser()
+	user, err := service.NewAuthService(stub).GetUser()
+	if err != nil {
+		return "", err
+	}
 	if !user.IsPediatrician() {
 		return "", errors.New("user is not a Pediatrician")
 	}

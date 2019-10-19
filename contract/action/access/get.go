@@ -13,7 +13,10 @@ func GetAccess(stub shim.ChaincodeStubInterface, args []string) (string, error) 
 	if len(args) != 1 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
 	}
-	user := service.NewAuthService(stub).GetUser()
+	user, err := service.NewAuthService(stub).GetUser()
+	if err != nil {
+		return "", err
+	}
 	if !user.IsParent() || !user.IsPediatrician() {
 		return "", errors.New("only parents or pediatrician can see access rights")
 	}

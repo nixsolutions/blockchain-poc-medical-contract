@@ -15,8 +15,10 @@ func SetCard(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a value")
 	}
-	user := service.NewAuthService(stub).GetUser()
-
+	user, err := service.NewAuthService(stub).GetUser()
+	if err != nil {
+		return "", err
+	}
 	if !user.IsParent() {
 		return "", errors.New("user is not a parent")
 	}

@@ -11,8 +11,10 @@ import (
 // Get returns the value of the specified asset key
 func GetCards(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	cardService := service.NewCardService(stub)
-	user := service.NewAuthService(stub).GetUser()
-
+	user, err := service.NewAuthService(stub).GetUser()
+	if err != nil {
+		return "", err
+	}
 	if user.IsParent() {
 		queryString := fmt.Sprintf("{\"selector\":{\"type\":\"card\",\"parents\":{\"$elemMatch\":{\"id\":\"%s\"}}}}", user.Id)
 		cards, err := cardService.FindCardsByQuery(queryString)

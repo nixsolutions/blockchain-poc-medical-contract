@@ -13,8 +13,8 @@ const HOSPITAL_ORG = "hospital"
 const PARENTS_ORG = "parents"
 
 //TODO: change  to CID
-func NewUser() *User {
-	return &User{Id: "max-parent-1", Role: "Parent", Org: "Parents"}
+func NewUser(id, role, org string) *User {
+	return &User{Id: id, Role: role, Org: org}
 }
 
 func (user *User) IsPediatrician() bool {

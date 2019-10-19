@@ -15,7 +15,10 @@ func SignAgreement(stub shim.ChaincodeStubInterface, args []string) (string, err
 	}
 	key := args[0]
 
-	user := service.NewAuthService(stub).GetUser()
+	user, err := service.NewAuthService(stub).GetUser()
+	if err != nil {
+		return "", err
+	}
 	if !user.IsPediatrician() {
 		return "", errors.New("user is not a Pediatrician")
 	}
