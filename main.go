@@ -1,39 +1,57 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/hyperledger/fabric-chaincode-go/shim"
-	"poc/contract"
+	"poc/contract/model"
 )
 
 // main function starts up the chaincode in the container during instantiate
 func main() {
 	//vac := []model.VaccinationItem{
-	//	model.VaccinationItem{
-	//		Name:      "test1",
-	//		Timestamp: 1111,
-	//	},
-	//	model.VaccinationItem{
-	//		Name:      "test2",
-	//		Timestamp: 2222,
+	//	{
+	//		Name:      "measles",
+	//		Timestamp: 1571590625,
 	//	},
 	//}
 	//card := model.Card{
-	//	Name:        "Max Pechenin",
+	//	Name:        "John Doe",
 	//	Type:        "card",
-	//	BirthDate:   "1999-05-24",
+	//	BirthDate:   "2007-05-24",
 	//	Height:      197,
 	//	Weight:      85,
 	//	Vaccination: vac,
-	//	Parents:     []model.Parent{{Id: "parent-max-1"}, {Id: "parent-max-2"}},
+	//	Parents:     []model.Parent{{Id: "parent-1-uid"}, {Id: "parent-2-uid"}},
 	//}
 	//bytes, err := json.Marshal(card)
 	//if err != nil {
 	//	return
 	//}
 	//fmt.Println(string(bytes))
+	//agreement := model.Agreement{
+	//	Type: "agreement",
+	//	Status: "TO_SIGN",
+	//	Doctor: "doctor-uniq-id",
+	//	Parents: []string{ "parent-1-uid",  "parent-2-uid"},
+	//	Timestamp: 1571590425,
+	//}
 
-	if err := shim.Start(new(contract.MedicalContract)); err != nil {
-		fmt.Printf("Error starting MedicalContract chaincode: %s", err)
+	access := model.Access{
+		Type: "access",
+		Doctor: "neuro-uniq-id",
+		GivenBy: "doctor-uniq-id",
+		Status: "valid",
+		Fields: []string{"name", "vaccination"},
+		Timestamp: 1571590525,
+		Card: "card-uniq-id",
 	}
+
+	bytes, err := json.Marshal(access)
+	if err != nil {
+		return
+	}
+	fmt.Println(string(bytes))
+	//if err := shim.Start(new(contract.MedicalContract)); err != nil {
+	//	fmt.Printf("Error starting MedicalContract chaincode: %s", err)
+	//}
 }

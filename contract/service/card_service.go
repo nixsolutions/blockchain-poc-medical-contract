@@ -2,6 +2,8 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
 )
@@ -25,6 +27,11 @@ func (service *CardService) FindAndUnmarshal(key string, card *model.Card) error
 
 func (service *CardService) Exists(key string) (bool, error) {
 	return service.basicRepo.Exists(service.keyPrefix + key)
+}
+
+func (service *CardService) FindCardsByParent(parentId string) ([]model.Card, error) {
+	queryString := fmt.Sprintf("{\"selector\":{\"type\":\"card\",\"parent\":\"%s\"}}", parentId)
+	return service.FindCardsByQuery(queryString)
 }
 
 func (service *CardService) FindCardsByQuery(queryString string) ([]model.Card, error) {
@@ -63,33 +70,16 @@ func (service *CardService) HasAccessToCard(cardKey string) (bool, error) {
 	}
 
 	if user.IsParent() {
-		for _, parent := range card.Parents {
-			if parent.Id == user.Id {
-				return true, nil
-			}
-		}
-		return false, nil
+		return card.Parent == user.Id, nil
 	}
 
-	if user.IsNeuropathologist() {
-		access, err := NewAccessService(service.basicRepo.Stub).FindAccessByDoctor(user.Id, cardKey)
-		if err != nil {
-			return false, nil
+	if user.IsHospitalWorker() {
+		agreement, _ := NewAgreementService(service.basicRepo.Stub).FindAgreementByDoctorAndParent(user.Id, card.Parent)
+		if agreement != nil {
+			return agreement.Status == model.SIGNED_STATUS, nil
 		}
-		if access.Status == model.ACCESS_STATUS_INVALID {
-			return false, nil
-		}
-	}
 
-	if user.IsPediatrician() {
-		agreementService := NewAgreementService(service.basicRepo.Stub)
-		for _, parent := range card.Parents {
-			agreement, _ := agreementService.FindAgreementByDoctorAndParent(user.Id, parent.Id)
-			if agreement != nil {
-				return agreement.Status == model.SIGNED_STATUS, nil
-			}
-		}
-		return false, nil
+		return false, errors.New("agreement was not found for card owner")
 	}
 
 	return false, nil

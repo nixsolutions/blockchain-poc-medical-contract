@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
-	"time"
 )
 
 type AgreementService struct {
@@ -30,13 +29,14 @@ func (service *AgreementService) Exists(key string) (bool, error) {
 	return service.basicRepo.Exists(service.keyPrefix + key)
 }
 
-func (service *AgreementService) Create(doctor string, parents []string) model.Agreement {
+func (service *AgreementService) Create(id string, doctor string, parent string, timestamp int64) model.Agreement {
 	return model.Agreement{
+		Id:        id,
 		Status:    model.TO_SIGN_STATUS,
 		Doctor:    doctor,
-		Parents:   parents,
-		Timestamp: time.Now().Unix(),
-		Type: "agreement",
+		Parent:    parent,
+		Timestamp: timestamp,
+		Type:      "agreement",
 	}
 }
 
@@ -49,33 +49,30 @@ func (service *AgreementService) Sign(agreement *model.Agreement) {
 }
 
 func (service *AgreementService) FindAgreementByDoctorAndParent(doctorId string, parentId string) (*model.Agreement, error) {
-	queryString := fmt.Sprintf("{\"selector\":{\"type\":\"agreement\",\"doctor\":\"%s\",\"parents\": {\"$elemMatch\": {\"id\": \"%s\"}}}}", doctorId, parentId)
-
-	resultsIterator, err := service.basicRepo.Stub.GetQueryResult(queryString)
+	queryString := fmt.Sprintf("{\"selector\":{\"type\":\"agreement\",\"doctor\":\"%s\",\"parent\":\"%s\"}}", doctorId, parentId)
+	agreements, err := service.FindAgreementsByQuery(queryString)
 	if err != nil {
 		return nil, err
 	}
-	defer resultsIterator.Close()
-
-	for resultsIterator.HasNext() {
-		queryResponse, err := resultsIterator.Next()
-		if err != nil {
-			return nil, err
-		}
-		var agreement model.Agreement
-		err = json.Unmarshal(queryResponse.Value, &agreement)
-		if err != nil {
-			return nil, err
-		}
-		return &agreement, nil
+	if len(agreements) == 0 {
+		return nil, errors.New("agreements was not found")
 	}
-	return nil, errors.New("agreement was not found")
+
+	return &agreements[0], nil
 }
 
 func (service *AgreementService) FindAgreementsByDoctor(doctorId string) ([]model.Agreement, error) {
 	queryString := fmt.Sprintf("{\"selector\":{\"type\":\"agreement\",\"doctor\":\"%s\"}}", doctorId)
+	return service.FindAgreementsByQuery(queryString)
+}
 
-	resultsIterator, err := service.basicRepo.Stub.GetQueryResult(queryString)
+func (service *AgreementService) FindAgreementsByParent(parentId string) ([]model.Agreement, error) {
+	queryString := fmt.Sprintf("{\"selector\":{\"type\":\"agreement\",\"parent\":\"%s\"}}", parentId)
+	return service.FindAgreementsByQuery(queryString)
+}
+
+func (service *AgreementService) FindAgreementsByQuery(query string) ([]model.Agreement, error) {
+	resultsIterator, err := service.basicRepo.Stub.GetQueryResult(query)
 	if err != nil {
 		return nil, err
 	}
@@ -93,6 +90,5 @@ func (service *AgreementService) FindAgreementsByDoctor(doctorId string) ([]mode
 		}
 		agreements = append(agreements, agreement)
 	}
-
 	return agreements, nil
 }

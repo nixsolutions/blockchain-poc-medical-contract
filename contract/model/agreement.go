@@ -4,9 +4,10 @@ const TO_SIGN_STATUS = "TO_SIGH"
 const SIGNED_STATUS = "SIGNED"
 
 type Agreement struct {
-	Type      string   `json:"type"`
-	Status    string   `json:"status"`
-	Doctor    string   `json:"doctor"`
-	Parents   []string `json:"parents"`
-	Timestamp int64    `json:"timestamp"`
+	Id        string `json:"id"`
+	Type      string `json:"type"`
+	Status    string `json:"status"`
+	Doctor    string `json:"doctor"`
+	Parent    string `json:"parent"`
+	Timestamp int64  `json:"timestamp"`
 }

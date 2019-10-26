@@ -7,13 +7,13 @@ import (
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
 	"poc/contract/service"
-	"strings"
+	"strconv"
 )
 
 // Get returns the value of the specified asset key
-func CreateAgreement(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	if len(args) != 3 {
-		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
+func Create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 4 {
+		return "", fmt.Errorf("Incorrect arguments. Expecting a key, doctor,parent, timestamp")
 	}
 
 	user, err := service.NewAuthService(stub).GetUser()
@@ -23,8 +23,11 @@ func CreateAgreement(stub shim.ChaincodeStubInterface, args []string) (string, e
 	if !user.IsParent() {
 		return "", errors.New("only parents can create agreements")
 	}
-	key, doctor, parentsString := args[0], args[1], args[2]
-	parents := strings.Split(parentsString, ",")
+	key, doctor, parent, timestampString := args[0], args[1], args[2], args[3]
+	timestamp, err := strconv.ParseInt(timestampString, 10, 64)
+	if err != nil {
+		return "", err
+	}
 
 	var agreement model.Agreement
 	agreementService := service.NewAgreementService(stub)
@@ -37,7 +40,7 @@ func CreateAgreement(stub shim.ChaincodeStubInterface, args []string) (string, e
 		return  "", err
 	}
 
-	agreement = agreementService.Create(doctor, parents)
+	agreement = agreementService.Create(key, doctor, parent, timestamp)
 
 	jsonBytes, err := json.Marshal(agreement)
 	if err != nil {

@@ -9,7 +9,7 @@ import (
 	"poc/contract/service"
 )
 
-func SignAgreement(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+func Sign(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 1 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
 	}
@@ -19,13 +19,13 @@ func SignAgreement(stub shim.ChaincodeStubInterface, args []string) (string, err
 	if err != nil {
 		return "", err
 	}
-	if !user.IsPediatrician() {
+	if !user.IsHospitalWorker() {
 		return "", errors.New("user is not a Pediatrician")
 	}
 
 	var agreement model.Agreement
 	agreementService := service.NewAgreementService(stub)
-    err := agreementService.FindAndUnmarshal(key, &agreement)
+    err = agreementService.FindAndUnmarshal(key, &agreement)
 
 	if err != nil {
 		return "", err

@@ -1,13 +1,14 @@
 package model
 
 type Card struct {
+	Id          string            `json:"id"` //same as key in the couchdb
 	Type        string            `json:"type"`
 	Name        string            `json:"name"`
 	BirthDate   string            `json:"birth_date"`
 	Height      int               `json:"height"`
 	Weight      int               `json:"weight"`
 	Vaccination []VaccinationItem `json:"vaccination"`
-	Parents     []Parent          `json:"parents"`
+	Parent     string            `json:"parent"`
 }
 
 type VaccinationItem struct {
@@ -22,7 +23,7 @@ func (card Card) ToMap() map[string]interface{} {
 	m["height"] = card.Height
 	m["weight"] = card.Weight
 	m["vaccination"] = card.Vaccination
-	m["parents"] = card.Parents
+	m["parent"] = card.Parent
 
 	return m
 }

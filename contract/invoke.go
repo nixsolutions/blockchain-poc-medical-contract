@@ -3,10 +3,8 @@ package contract
 import (
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-protos-go/peer"
-	"poc/contract/action/access"
 	"poc/contract/action/agreement"
 	"poc/contract/action/card"
-	"poc/contract/action/vaccination"
 )
 
 // Invoke is called per transaction on the chaincode. Each transaction is
@@ -20,34 +18,24 @@ func (t *MedicalContract) Invoke(stub shim.ChaincodeStubInterface) peer.Response
 	var err error
 
 	switch fn {
-	case "setCard":
-		result, err = card.SetCard(stub, args)
+	case "createCard":
+		result, err = card.Create(stub, args)
+	case "updateCard":
+		result, err = card.Update(stub, args)
 	case "getCard":
-		result, err = card.GetCard(stub, args)
+		result, err = card.Get(stub, args)
 	case "getCards":
-		result, err = card.GetCards(stub, args)
-
-	case "createAccess":
-		result, err = access.CreateAccess(stub, args)
-	case "getAccess":
-		result, err = access.GetAccess(stub, args)
+		result, err = card.GetAll(stub, args)
 
 	case "getAgreement":
-		result, err = agreement.GetAgreement(stub, args)
+		result, err = agreement.Get(stub, args)
 	case "createAgreement":
-		result, err = agreement.CreateAgreement(stub, args)
+		result, err = agreement.Create(stub, args)
 	case "signAgreement":
-		result, err = agreement.SignAgreement(stub, args)
-
-	case "addVaccination":
-		result, err = vaccination.AddVaccination(stub, args)
-	case "updateVaccinationTimestamp":
-		result, err = vaccination.UpdateVaccinationTimestamp(stub, args)
-	case "deleteVaccination":
-		result, err = vaccination.DeleteVaccination(stub, args)
+		result, err = agreement.Sign(stub, args)
 
 	default:
-		result, err = card.GetCard(stub, args)
+		result, err = card.Get(stub, args)
 	}
 
 	if err != nil {

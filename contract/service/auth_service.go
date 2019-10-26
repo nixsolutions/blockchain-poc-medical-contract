@@ -15,7 +15,6 @@ func NewAuthService(stub shim.ChaincodeStubInterface) *AuthService {
 	return &AuthService{basicRepo: &BasicRepository{Stub: stub}}
 }
 
-//TODO: change to cid attr data
 func (service *AuthService) GetUser() (*model.User, error) {
 	// Get the client ID object
 	id, err := cid.New(service.basicRepo.Stub)
@@ -26,13 +25,6 @@ func (service *AuthService) GetUser() (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	role, found, err := id.GetAttributeValue("role")
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, errors.New("role attr was not found")
-	}
 
 	personId, found, err := id.GetAttributeValue("id")
 	if err != nil {
@@ -42,5 +34,5 @@ func (service *AuthService) GetUser() (*model.User, error) {
 		return nil, errors.New("role attr was not found")
 	}
 
-	return model.NewUser(personId, role, mspid), nil
+	return model.NewUser(personId, mspid), nil
 }
