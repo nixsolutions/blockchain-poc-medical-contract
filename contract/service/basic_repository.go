@@ -10,24 +10,15 @@ type BasicRepository struct {
 	Stub shim.ChaincodeStubInterface
 }
 
-func (repo  *BasicRepository) Find(key string) ([]byte, error) {
-	bytes, err := repo.Stub.GetState(key)
-	if err != nil {
-		return  nil, fmt.Errorf("Failed to get obj: %s with error: %s", key, err)
-	}
+func (repo  *BasicRepository) Find(key string) []byte {
+	bytes, _ := repo.Stub.GetState(key)
 
-	if bytes == nil {
-		return  nil, fmt.Errorf("Failed to get obj: %s with error: %s", key, err)
-	}
-
-	return bytes, nil
+	return bytes
 }
 
 func (repo *BasicRepository) FindAndUnmarshal(key string, dest interface{}) error {
-	bytes, err := repo.Find(key)
-	if err != nil {
-		return err
-	}
+	bytes := repo.Find(key)
+
 
 	err = json.Unmarshal([]byte(bytes), dest)
 	if err != nil {
@@ -38,9 +29,6 @@ func (repo *BasicRepository) FindAndUnmarshal(key string, dest interface{}) erro
 }
 
 func (repo *BasicRepository) Exists(key string) (bool, error) {
-	bytes, err := repo.Find(key)
-	if err != nil {
-		return false, err
-	}
+	bytes := repo.Find(key)
 	return bytes != nil, nil
 }

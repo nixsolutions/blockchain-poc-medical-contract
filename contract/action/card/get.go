@@ -28,15 +28,6 @@ func Get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", err
 	}
 
-	user, err := service.NewAuthService(stub).GetUser()
-	if err != nil {
-		return "", err
-	}
-
-	if !user.IsParent() || !user.IsHospitalWorker() {
-		return "", errors.New("you are not allowed to get the card")
-	}
-
 	bytes, err := json.Marshal(card)
 	if err != nil {
 		return "", err

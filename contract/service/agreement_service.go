@@ -17,7 +17,7 @@ func NewAgreementService(stub shim.ChaincodeStubInterface) *AgreementService {
 	return &AgreementService{basicRepo: &BasicRepository{Stub: stub}, keyPrefix: "AGR"}
 }
 
-func (service *AgreementService) Find(key string) ([]byte, error) {
+func (service *AgreementService) Find(key string) []byte {
 	return service.basicRepo.Find(service.keyPrefix + key)
 }
 

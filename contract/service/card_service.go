@@ -17,7 +17,7 @@ func NewCardService(stub shim.ChaincodeStubInterface) *CardService {
 	return &CardService{basicRepo: &BasicRepository{Stub: stub}, keyPrefix: "CARD"}
 }
 
-func (service *CardService) Find(key string) ([]byte, error) {
+func (service *CardService) Find(key string) []byte {
 	return service.basicRepo.Find(service.keyPrefix + key)
 }
 
@@ -65,6 +65,7 @@ func (service *CardService) HasAccessToCard(cardKey string) (bool, error) {
 	}
 
 	user, err := NewAuthService(service.basicRepo.Stub).GetUser()
+	fmt.Println(user)
 	if err != nil {
 		return false, err
 	}

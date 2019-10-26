@@ -1,9 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"poc/contract/model"
+	"github.com/hyperledger/fabric-chaincode-go/shim"
+	"poc/contract"
 )
 
 // main function starts up the chaincode in the container during instantiate
@@ -21,7 +21,7 @@ func main() {
 	//	Height:      197,
 	//	Weight:      85,
 	//	Vaccination: vac,
-	//	Parents:     []model.Parent{{Id: "parent-1-uid"}, {Id: "parent-2-uid"}},
+	//	Parent:     "parent1",
 	//}
 	//bytes, err := json.Marshal(card)
 	//if err != nil {
@@ -32,26 +32,17 @@ func main() {
 	//	Type: "agreement",
 	//	Status: "TO_SIGN",
 	//	Doctor: "doctor-uniq-id",
-	//	Parents: []string{ "parent-1-uid",  "parent-2-uid"},
+	//	Parent: "parent1",
 	//	Timestamp: 1571590425,
 	//}
-
-	access := model.Access{
-		Type: "access",
-		Doctor: "neuro-uniq-id",
-		GivenBy: "doctor-uniq-id",
-		Status: "valid",
-		Fields: []string{"name", "vaccination"},
-		Timestamp: 1571590525,
-		Card: "card-uniq-id",
-	}
-
-	bytes, err := json.Marshal(access)
-	if err != nil {
-		return
-	}
-	fmt.Println(string(bytes))
-	//if err := shim.Start(new(contract.MedicalContract)); err != nil {
-	//	fmt.Printf("Error starting MedicalContract chaincode: %s", err)
+	//
+	//bytes, err = json.Marshal(agreement)
+	//if err != nil {
+	//	return
 	//}
+	//fmt.Println(string(bytes))
+
+	if err := shim.Start(new(contract.MedicalContract)); err != nil {
+		fmt.Printf("Error starting MedicalContract chaincode: %s", err)
+	}
 }
