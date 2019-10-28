@@ -31,7 +31,7 @@ func (service *AuthService) GetUser() (*model.User, error) {
 		return nil, err
 	}
 	if !found {
-		return nil, errors.New("role attr was not found")
+		return nil, errors.New("id attr was not found")
 	}
 
 	return model.NewUser(personId, mspid), nil

@@ -5,10 +5,8 @@ type User struct {
 	Org  string
 }
 
-
-const HOSPITAL_ORG = "hospital"
-const PARENTS_ORG = "parents"
-
+const HOSPITAL_ORG = "HospitalMSP"
+const PARENTS_ORG = "ParentsMSP"
 
 func NewUser(id, org string) *User {
 	return &User{Id: id, Org: org}
