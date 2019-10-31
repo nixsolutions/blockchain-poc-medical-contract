@@ -26,7 +26,7 @@ func (service *AuthService) GetUser() (*model.User, error) {
 		return nil, err
 	}
 
-	personId, found, err := id.GetAttributeValue("id")
+	personId, found, err := id.GetAttributeValue("hf.EnrollmentID")
 	if err != nil {
 		return nil, err
 	}
