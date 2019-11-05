@@ -7,13 +7,14 @@ import (
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
 	"poc/contract/service"
+	"strconv"
 )
 
 // Set stores the asset (both key and value) on the ledger. If the key exists,
 // it will override the value with the new one
 func Update(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	if len(args) != 2 {
-		return "", fmt.Errorf("Incorrect arguments. Expecting a value")
+	if len(args) != 3 {
+		return "", fmt.Errorf("Incorrect arguments. Expecting a cardID, height, weight")
 	}
 	user, err := service.NewAuthService(stub).GetUser()
 	if err != nil {
@@ -24,21 +25,27 @@ func Update(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", errors.New("user is not a parent")
 	}
 
-	var card model.Card
-	err = json.Unmarshal([]byte(args[1]), &card)
-	if err != nil {
-		return "", fmt.Errorf("Failed to unmarshall arg", args[0])
-	}
-
 	var existingCard *model.Card
 	err = service.NewCardService(stub).FindAndUnmarshal(args[0], existingCard)
 	if err != nil {
 		return "", err
 	}
 
-	cardJsonBytes, err := json.Marshal(card)
+	height, err := strconv.Atoi(args[1])
 	if err != nil {
-		return "", fmt.Errorf("Failed to marshall card", args[0])
+		return "", err
+	}
+	weight, err := strconv.Atoi(args[2])
+	if err != nil {
+		return "", err
+	}
+
+	existingCard.Height = height
+	existingCard.Weight = weight
+
+	cardJsonBytes, err := json.Marshal(existingCard)
+	if err != nil {
+		return "", err
 	}
 
 	err = stub.PutState("CARD"+args[0], cardJsonBytes)
