@@ -25,7 +25,7 @@ func Update(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", errors.New("user is not a parent")
 	}
 
-	var existingCard *model.Card
+	var existingCard *model.Card = &model.Card{}
 	err = service.NewCardService(stub).FindAndUnmarshal(args[0], existingCard)
 	if err != nil {
 		return "", err

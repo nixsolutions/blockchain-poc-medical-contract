@@ -23,7 +23,7 @@ func (repo *BasicRepository) FindAndUnmarshal(key string, dest interface{}) erro
 	}
 	err := json.Unmarshal([]byte(bytes), dest)
 	if err != nil {
-		return fmt.Errorf("Failed to unmarshall obj", key)
+		return fmt.Errorf("Failed to unmarshall obj %s : %v", key, err)
 	}
 
 	return nil
