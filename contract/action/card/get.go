@@ -2,29 +2,36 @@ package card
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"poc/contract/model"
-	"poc/contract/repository"
+	"poc/contract/service"
 )
 
 // Get returns the value of the specified asset key
-func GetCard(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	if len(args) != 1 {
-		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
+func Get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) < 1 {
+		return "", errors.New("Incorrect number of arguments. Expecting 1")
 	}
-
-	var card model.Card
-	cardRepository := &repository.CardRepository{Stub: stub}
-	err := cardRepository.Find("CARD" + args[0], &card)
+	cardService := service.NewCardService(stub)
+	hasAccess, err := cardService.HasAccessToCard(args[0])
+	if !hasAccess {
+		return "", errors.New("no access to card")
+	}
 	if err != nil {
 		return "", err
 	}
 
-	jsonBytes, err := json.Marshal(card)
+	var card model.Card
+	err = cardService.FindAndUnmarshal(args[0], &card)
 	if err != nil {
-		return  "", fmt.Errorf("Failed to marshall card obj", args[0])
+		return "", err
 	}
 
-	return string(jsonBytes), nil
+	bytes, err := json.Marshal(card)
+	if err != nil {
+		return "", err
+	}
+
+	return string(bytes), nil
 }
