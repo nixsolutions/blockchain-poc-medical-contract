@@ -1,5 +1,0 @@
-peer chaincode instantiate -o orderer.poc-network.com:7050 -C parentshospitalkindergarten -n main -v 1.0 -c '{"Args":["CARD1","{\"id\":\"\",\"type\":\"card\",\"name\":\"John Doe\",\"birth_date\":\"2007-05-24\",\"height\":197,\"weight\":85,\"vaccination\":[{\"name\":\"measles\",\"timestamp\":1571590625}],\"parent\":\"parent1\"}"]}' --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/poc-network.com/orderers/orderer.poc-network.com/msp/tlscacerts/tlsca.poc-network.com-cert.pem -P "AND ('ParentsMSP.peer','HospitalMSP.peer')"
-
-peer chaincode query -C parentshospitalkindergarten -n main -c '{"Args":["getCard","1"]}'
-
-peer chaincode invoke -o orderer.poc-network.com:7050 -C parentshospitalkindergarten -n main -c '{"Args":["getCard","1"]}' --tls --cafile $ORDERER_CA

@@ -10,7 +10,6 @@ import (
 	"strconv"
 )
 
-// Get returns the value of the specified asset key
 func Create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 3 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key, doctor, timestamp")

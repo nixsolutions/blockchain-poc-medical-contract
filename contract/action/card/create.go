@@ -9,8 +9,6 @@ import (
 	"poc/contract/service"
 )
 
-// Set stores the asset (both key and value) on the ledger. If the key exists,
-// it will override the value with the new one
 func Create(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a value")

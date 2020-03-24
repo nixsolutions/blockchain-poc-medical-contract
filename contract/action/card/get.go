@@ -8,7 +8,6 @@ import (
 	"poc/contract/service"
 )
 
-// Get returns the value of the specified asset key
 func Get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) < 1 {
 		return "", errors.New("Incorrect number of arguments. Expecting 1")

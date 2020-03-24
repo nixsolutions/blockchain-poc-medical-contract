@@ -7,7 +7,6 @@ import (
 	"poc/contract/service"
 )
 
-// Get returns the value of the specified asset key
 func GetAll(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	cardService := service.NewCardService(stub)
 	user, err := service.NewAuthService(stub).GetUser()

@@ -10,8 +10,6 @@ import (
 	"strconv"
 )
 
-// Set stores the asset (both key and value) on the ledger. If the key exists,
-// it will override the value with the new one
 func Update(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 3 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a cardID, height, weight")
