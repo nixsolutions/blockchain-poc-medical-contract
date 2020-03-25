@@ -1,5 +1,11 @@
 # MedicalContract chaincode(smart contract)
 
+## Actors
+
+There are 2 actors:
+ - Hospital organization
+ - Parent organization
+
 ## Purpose
 
 The main purpose of MedicalContract is to store medical records of children in the blockchain system. There are some rules related to access and update actions for cards:
