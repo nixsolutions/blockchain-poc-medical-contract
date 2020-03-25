@@ -1,5 +1,15 @@
 # MedicalContract chaincode(smart contract)
 
+## Purpose
+
+The main purpose of MedicalContract is to store medical records of children in the blockchain system. There are some rules related to access and update actions for cards:
+ - only parent can create a card
+ - only hospital worker can update card data
+ - parent can read cards of their children
+ - hospital can read cards of examined children (hospital and parent must have an agreement)
+ - only parent can create agreement
+ - only hospital can sign an agreement
+
 ## Where to start
 
 Every program in Golang starts with a function main(). You can find main() function in  main.go.
@@ -15,15 +25,15 @@ You can find MedicalContract struct and implementation of 2 required methods `In
 ## Action handlers
 You can find actions in `contract/action` folder. Just like controllers in web apps with MVC pattern, actions are connectors between business logic layer of smart contract and transport layer.
 There are actions for agreement:
-- createAgreement
-- getAgreement
-- signAgreement
+- createAgreement - Parent can create an agreement with the hospital, where their child is examined
+- getAgreement - Parent and a hospital worker can see agreement from the world state database
+- signAgreement - hospital can sign an agreement with a parent
 
 And there are actions for cards:
-- getCard
-- getCards
-- createCard
-- updateCard
+- getCard - Parent and the hospital can get card of the child
+- getCards - Parent can get cards of their children and hospital worker can get cards of examined children
+- createCard - Parent can create a card
+- updateCard - Hospital worker can update card
 
 
 ## Models
@@ -37,4 +47,3 @@ There are 3 models:
 You can find services in `contract/service` folder. This  folder contains business logic of smart contract
 There are `AgreementService` to work with agreements and `CardService`  to work with cards. 
 AuthService is a wrapper to define who invokes the chaincode.
- 
