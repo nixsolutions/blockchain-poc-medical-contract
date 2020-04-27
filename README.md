@@ -55,4 +55,4 @@ There are `AgreementService` to work with agreements and `CardService`  to work 
 AuthService is a wrapper to define who invokes the chaincode.
 
 ## License
-The project is developed by [NIX Solutions](http://nixsolutions.com) Go team and distributed under [MIT LICENSE](https://github.com/nixsolutions/blockchain-poc-medical-contract/master/LICENSE)
+The project is developed by [NIX Solutions](http://nixsolutions.com) Go team and distributed under [MIT LICENSE](https://github.com/nixsolutions/blockchain-poc-medical-contract/blob/master/LICENSE)
