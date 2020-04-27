@@ -53,3 +53,6 @@ There are 3 models:
 You can find services in `contract/service` folder. This  folder contains business logic of smart contract
 There are `AgreementService` to work with agreements and `CardService`  to work with cards. 
 AuthService is a wrapper to define who invokes the chaincode.
+
+## License
+The project is developed by [NIX Solutions](http://nixsolutions.com) Go team and distributed under [MIT LICENSE](https://github.com/nixsolutions/blockchain-poc-medical-contract/master/LICENSE)
